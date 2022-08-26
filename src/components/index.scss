@@ -1,0 +1,22 @@
+.container-back {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    width: 35px;
+    height: 35px;
+    margin: 0 20px 0;
+
+  }
+
+  p {
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 38px;
+    color: #000000;
+
+  }
+
+}
