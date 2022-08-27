@@ -1,0 +1,16 @@
+.blocks {
+  &__title {
+    margin-bottom: 65px;
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 52px;
+    color: #000000;
+    text-align: center;
+  }
+
+  &__select-collection {
+    display: flex;
+    flex-direction: column;
+    gap: 65px;
+  }
+}
