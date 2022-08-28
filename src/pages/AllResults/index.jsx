@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles.scss';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 
 function createData(name, calories, fat, carbs, protein) {
@@ -15,6 +16,7 @@ const rows = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   return (
     <div className="all-results">
       <div className="container">
@@ -47,6 +49,10 @@ const Index = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <div style={{ marginTop: 50, display: 'flex', gap: 30 }}>
+          <Button variant="contained" onClick={() => navigate('/blocks')}>Qayta urinish</Button>
+          <Button variant="contained" onClick={() => navigate('/profile')}>Profil</Button>
+        </div>
       </div>
     </div>
   );
