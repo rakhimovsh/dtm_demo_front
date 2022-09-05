@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Blocks from './pages/Blocks';
-import University from './pages/University';
 import Result from './pages/Result';
 import AllResults from './pages/AllResults';
 import Profile from './pages/Profile';
@@ -15,8 +14,7 @@ const Authonticated = () => {
         <Route path={'/'} element={<Navigate to="/blocks" replace />} />
         <Route path={'/register'} element={<Navigate to="/blocks" replace />} />
         <Route path="/blocks" element={<Blocks />} />
-        <Route path="/university" element={<University />} />
-        <Route path="/result" element={<Result />} />
+        <Route path="/result/:resultId" element={<Result />} />
         <Route path="/all-results" element={<AllResults />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/test" element={<Test />} />

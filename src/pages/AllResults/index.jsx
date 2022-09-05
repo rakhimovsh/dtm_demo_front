@@ -1,26 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles.scss';
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../../lib/api';
+import dayjs from 'dayjs';
 
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData(1, 'Navro`z', 'Moliya', '12.10.2022', 189),
-  createData(1, 'Navro`z', 'Moliya', '12.10.2022', 189),
-  createData(1, 'Navro`z', 'Moliya', '12.10.2022', 189),
-  createData(1, 'Navro`z', 'Moliya', '12.10.2022', 189),
-];
 
 const Index = () => {
   const navigate = useNavigate();
+  const [results, setResults] = useState();
+
+  useEffect(() => {
+    api().get('/results').then(({ data }) => {
+      if (data?.data) {
+        setResults(data.data);
+      }
+    });
+  }, []);
+  console.log(results);
   return (
     <div className="all-results">
       <div className="container">
-        <h2 className="all-results__title">Songi imtihon g’olibi</h2>
+        <h2 className="all-results__title">Imtihon natijalari</h2>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -33,17 +34,18 @@ const Index = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
+              {results && results.map((row, index) => (
                 <TableRow
-                  key={row.name}
+                  key={row.result_id}
+                  style={{ background: row.result == 'rad etildi' ? 'red' : 'white' }}
                 >
                   <TableCell>
-                    {row.name}
+                    {index + 1}
                   </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="right">{row.carbs}</TableCell>
-                  <TableCell align="right">{row.protein}</TableCell>
+                  <TableCell align="right">{row.username}</TableCell>
+                  <TableCell align="right">{row.faculty}</TableCell>
+                  <TableCell align="right">{dayjs(row.created_at).format('DD.MM.YYYY')}</TableCell>
+                  <TableCell align="right">{row.result_score}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

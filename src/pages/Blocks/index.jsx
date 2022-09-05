@@ -1,26 +1,111 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './styles.scss';
 import Back from '../../components/Back';
 import { Button } from '@mui/material';
 import Select from '../../components/Select';
+import { api, host } from '../../lib/api';
+import GroupSelect from '../../components/GroupSelect';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const [firstSubjectId, setFirstSubjectId] = React.useState('');
+  const [secondSubjectId, setSecondSubjectId] = React.useState('');
+  const [universityId, setUniversityId] = useState('');
+  const [firstSubjects, setFirstSubjects] = useState();
+  const [secondSubjects, setSecondSubjects] = useState();
+  const [universities, setUniversities] = useState();
+  const [faculty, setFaculty] = useState();
+  const navigate = useNavigate();
 
-  const [firstSubject, setFirstSubject] = React.useState('');
-  const [secondSubject, setSecondSubject] = React.useState('');
+  useEffect(() => {
+    api().get('/subjects').then(({ data }) => {
+      setFirstSubjects(data);
+    });
+  }, []);
 
+  useEffect(() => {
+    if (firstSubjectId) {
+      api().get('/subjects/' + firstSubjectId).then(({ data }) => {
+        setSecondSubjects(data);
+      });
+    }
+  }, [firstSubjectId]);
+
+  useEffect(() => {
+    if (secondSubjectId) {
+      api().get(`/universities?first=${firstSubjectId}&second=${secondSubjectId}`).then(({ data }) => {
+        setUniversities(data);
+      });
+    }
+  }, [secondSubjectId]);
+  useEffect(() => {
+    if (universityId) {
+      api().get('/faculty/' + universityId).then(({ data }) => {
+        setFaculty(data?.data);
+      });
+    }
+  }, [universityId]);
+
+  const handleClick = () => {
+    host().post('/info', {
+      first_subject_id: firstSubjectId,
+      second_subject_id: secondSubjectId,
+      faculty_id: faculty.faculty_id,
+    }).then(({ data }) => {
+      if (data?.data) {
+        localStorage.setItem('userInfo', JSON.stringify(data.data.ui_id));
+        navigate('/test');
+      }
+    });
+  };
 
   return (
     <div className="blocks">
       <div className="container">
         <Back />
         <h2 className="blocks__title">Asosiy Imtihonga hush kelibsiz</h2>
-        <div className='blocks__select-collection'>
-          <Select title="Birinchi fan" label="Blok 1" value={firstSubject} setValue={setFirstSubject} width={540} />
-          <Select title="Ikkinchi fan" label="Blok 2" value={secondSubject} setValue={setSecondSubject} width={540} />
-        < /div>
-        <Button style={{ display: 'block', marginTop: 50 }} variant="contained">Keyingi</Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <div className="blocks__select-collection">
+              <Select title="Birinchi fan" label="Blok 1" value={firstSubjectId} setValue={setFirstSubjectId}
+                      width={540} data={firstSubjects} />
+              <Select title="Ikkinchi fan" label="Blok 2" value={secondSubjectId} setValue={setSecondSubjectId}
+                      width={540} data={secondSubjects} />
+            < /div>
+            <div className="university">
+              <div className="university__body">
+                <div className="university__selection">
+                  <GroupSelect title="OTM nomi" setValue={setUniversityId} value={universityId} label="OTM" width={540}
+                               data={universities} />
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="university__info">
+              {/*<div className="university__selected-faculty">*/}
+
+              {/*</div>*/}
+              <div className="university__score">
+                {
+                  faculty && <>
+                    <h3>{faculty.university}</h3>
+                    <ul>
+                      <li><p>Grant</p><span>{faculty.grand_place}</span><span>{faculty.grand_score}</span></li>
+                      <li><p>Sharnoma</p><span>{faculty.contract_place}</span><span>{faculty.contract_score}</span></li>
+                    </ul>
+                  </>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Button style={{ display: 'block', marginTop: 50 }} variant="contained" disabled={universityId ? false : true}
+                onClick={handleClick}>Testni
+          boshlash</Button>
 
       </div>
     </div>
